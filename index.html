@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MotorPH payroll verification | Mid-fidelity prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F4F5F7;--card:#fff;--line:#E1E4E8;--tx:#1F2328;--tx2:#656D76;
+  --acc:#2457D6;--acc-l:#E8EEFC;--side:#14213D;--side-active:#24365F;
+  --red-b:#FDE3E3;--red-t:#A62424;--grn-b:#DDF4E4;--grn-t:#1A6B3A;
+  --amb-b:#FFF1CC;--amb-t:#8A5A00;--gry:#ECEEF1;--row-r:#FFF6F6;--hdr:#F8F9FB;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--tx);font-size:14px;line-height:1.4}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--acc);outline-offset:2px;border-radius:6px}
+.screen{display:flex;min-height:100vh}
+.screen[hidden]{display:none}
+.side{width:240px;flex-shrink:0;background:var(--side);color:#fff;padding:24px 16px;display:flex;flex-direction:column;justify-content:space-between;position:sticky;top:0;height:100vh}
+.logo{padding:0 12px 20px}
+.logo b{display:block;font-size:20px;font-weight:700}
+.logo span{font-size:12px;color:#9DB0D8}
+.side nav{display:flex;flex-direction:column;gap:4px}
+.side nav a{padding:10px 12px;border-radius:8px;color:#C5D0EA;font-size:14px}
+.side nav a:hover{background:rgba(255,255,255,.06)}
+.side nav a[aria-current="page"]{background:var(--side-active);color:#fff;font-weight:600}
+.user{padding:0 12px;font-size:12px;color:#9DB0D8}
+.user b{display:block;font-size:13px;font-weight:500;color:#fff}
+.user small{display:block;margin-top:2px;font-size:11px;color:#7F93BF}
+main{flex:1;min-width:0;padding-bottom:32px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:18px 32px;background:var(--card);border-bottom:1px solid var(--line)}
+.top h1{margin:0;font-size:22px;font-weight:600}
+.top p{margin:2px 0 0;font-size:13px;color:var(--tx2)}
+.period{background:var(--gry);color:var(--tx2);font-size:13px;font-weight:500;padding:8px 12px;border-radius:8px;white-space:nowrap}
+.content{padding:20px 32px 0;display:flex;flex-direction:column;gap:20px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px}
+.pad{padding:20px}
+.btn{display:inline-flex;align-items:center;justify-content:center;padding:9px 16px;border-radius:8px;font-size:13px;font-weight:500;border:1px solid var(--line);background:#fff;color:var(--tx);cursor:pointer;font-family:inherit}
+.btn:hover{background:var(--hdr)}
+.btn.primary{background:var(--acc);border-color:var(--acc);color:#fff}
+.btn.primary:hover{background:#1c47b3}
+.btn.disabled{background:var(--gry);color:var(--tx2);border-color:var(--gry);cursor:default}
+.link{color:var(--acc);font-weight:500;font-size:13px;padding:6px 4px;display:inline-block}
+.link:hover{text-decoration:underline}
+.badge{display:inline-block;padding:4px 10px;border-radius:12px;font-size:12px;font-weight:500;white-space:nowrap}
+.red{background:var(--red-b);color:var(--red-t)}.grn{background:var(--grn-b);color:var(--grn-t)}.amb{background:var(--amb-b);color:var(--amb-t)}
+.banner{display:flex;justify-content:space-between;align-items:center;gap:16px;background:var(--amb-b);color:var(--amb-t);border-radius:12px;padding:14px 20px}
+.banner b{display:block;font-size:15px;font-weight:600}
+.banner span{font-size:13px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px}
+.stat{padding:16px 20px}
+.stat small{display:block;font-size:13px;color:var(--tx2)}
+.stat strong{display:block;font-size:28px;font-weight:600;margin:4px 0}
+.stat.sm strong{font-size:24px}
+.stat span{font-size:12px;color:var(--tx2)}
+.widgets{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:20px}
+.widgets h2,.panel h2{margin:0;font-size:16px;font-weight:600}
+.wh{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.muted{color:var(--tx2);font-size:13px;margin:0}
+.flag{display:flex;gap:12px;align-items:center;justify-content:space-between;padding:12px 0;border-top:1px solid var(--line)}
+.flag b{display:block;font-weight:500;font-size:14px}
+.flag span{font-size:13px;color:var(--tx2)}
+.bar{display:flex;gap:2px;height:10px;border-radius:5px;overflow:hidden;margin:12px 0 4px}
+.bar i{display:block;height:100%}
+.srow{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-top:1px solid var(--line)}
+.srow strong{font-size:16px;font-weight:600}
+.foot{margin-top:12px}
+.chips{display:flex;gap:8px;align-items:center}
+.chip{padding:7px 16px;border-radius:16px;font-size:13px;font-weight:500;border:1px solid var(--line);background:#fff}
+.chip[aria-current="true"]{background:var(--acc);border-color:var(--acc);color:#fff}
+.bar-row{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:900px}
+th{font-size:12px;font-weight:600;color:var(--tx2);text-align:left;padding:0 8px 0 16px;height:44px;background:var(--hdr);border-bottom:1px solid var(--line)}
+td{padding:12px 8px 12px 16px;border-bottom:1px solid var(--line);font-size:13px;vertical-align:middle}
+td:first-child,th:first-child{padding-left:16px}
+tr.bad td{background:var(--row-r)}
+tr.sec td{background:#FBFBFC;font-size:12px;font-weight:600;color:var(--tx2);padding-top:10px;padding-bottom:10px}
+tr.total td{background:var(--hdr);font-size:14px;font-weight:600;border-bottom:0}
+td.name{font-weight:500}
+td.bad-v{color:var(--red-t);font-weight:600}
+.dash{color:var(--tx2)}
+.detail td{background:#FAFBFD;padding:16px}
+.detail h3{margin:0 0 12px;font-size:14px;font-weight:600}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;margin-bottom:12px}
+.blk{background:#fff;border:1px solid var(--line);border-radius:8px;padding:12px 14px}
+.blk h4{margin:0 0 6px;font-size:12px;font-weight:600;color:var(--tx2)}
+.blk p{margin:0 0 4px;font-size:13px}
+.diff{background:var(--red-b);color:var(--red-t);font-size:13px;font-weight:500;border-radius:8px;padding:10px 14px;margin-bottom:12px}
+.acts{display:flex;gap:8px;flex-wrap:wrap}
+.toast{display:flex;justify-content:space-between;align-items:center;gap:12px;background:var(--grn-b);color:var(--grn-t);font-size:13px;font-weight:500;border-radius:8px;padding:12px 16px}
+.toast a{color:var(--grn-t);text-decoration:underline}
+.note{font-size:12px;color:var(--tx2);margin:0}
+.sum{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+@media (max-width:860px){
+  .screen{flex-direction:column}
+  .side{width:auto;height:auto;position:static;padding:16px}
+  .side nav{flex-direction:row;flex-wrap:wrap}
+  .user{display:none}
+  .top{flex-direction:column;align-items:flex-start;padding:16px}
+  .content{padding:16px 16px 0}
+}
+@media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<noscript><p style="padding:24px">This prototype needs JavaScript to switch between screens.</p></noscript>
+<script>
+const NAV=[['Dashboard','01'],['Pre-payroll validation','02'],['Payslip audit trail','03'],['OT & leave approvals','04']];
+const peso=n=>'₱ '+n;
+
+function shell(id,active,title,sub,body){
+  return `<section class="screen" data-screen="${id}" hidden>
+    <aside class="side">
+      <div>
+        <div class="logo"><b>MotorPH</b><span>Payroll</span></div>
+        <nav aria-label="Main">${NAV.map((n,i)=>`<a href="#${n[1]}" ${i===active?'aria-current="page"':''}>${n[0]}</a>`).join('')}</nav>
+      </div>
+      <div class="user"><b>Rachel Martinez</b>Payroll staff<small>Prototype · sample data</small></div>
+    </aside>
+    <main>
+      <header class="top"><div><h1 tabindex="-1">${title}</h1><p>${sub}</p></div><div class="period">Pay period: Oct 1 – 15, 2026 (sample)</div></header>
+      <div class="content">${body}</div>
+    </main>
+  </section>`;
+}
+
+/* 01 Dashboard */
+const s01=shell('01',0,'Payroll dashboard','Your confidence check before running payroll.',`
+  <div class="banner"><div><b>2 items need your attention before payroll runs</b><span>Resolve the validation flags and the request that needs information, then run payroll with confidence.</span></div><a class="btn primary" href="#02">Review flags</a></div>
+  <div class="stats">
+    <div class="card stat"><small>Employees in this run</small><strong>10</strong><span>Sample pay period</span></div>
+    <div class="card stat"><small>Checks passed</small><strong>8 of 10</strong><span>Rule vs. expected vs. detected</span></div>
+    <div class="card stat"><small>Open validation flags</small><strong style="color:var(--red-t)">2</strong><span>Mismatches to resolve</span></div>
+    <div class="card stat"><small>Awaiting approval action</small><strong style="color:var(--amb-t)">3</strong><span>2 pending sign-off, 1 needs info</span></div>
+  </div>
+  <div class="widgets">
+    <div class="card pad">
+      <div class="wh"><h2>Pre-payroll validation flags</h2><span class="badge red">2 open</span></div>
+      <p class="muted">Mismatches found between the rule applied, the expected value, and the system-detected value.</p>
+      <div class="flag"><div><b>Ana Reyes · Overtime pay</b><span>System counted 12.5 OT hours, but only 10 hours are approved.</span></div><a class="link" href="#03">Review</a></div>
+      <div class="flag"><div><b>Carla Dizon · Leave</b><span>No approved leave form is on file, so a deduction of ₱ 1,200.00 was detected.</span></div><a class="link" href="#04">Review</a></div>
+      <div class="foot"><a class="btn" href="#02">Open validation table</a></div>
+    </div>
+    <div class="card pad">
+      <div class="wh"><h2>OT &amp; leave approval status</h2><span class="muted">6 requests</span></div>
+      <p class="muted">One shared status for every overtime and leave request in this pay period.</p>
+      <div class="bar" role="img" aria-label="3 approved, 2 pending, 1 needs info"><i style="flex:3;background:#3FA66A"></i><i style="flex:2;background:#E3A008"></i><i style="flex:1;background:#D64545"></i></div>
+      <div class="srow"><span class="badge grn">Approved</span><strong>3</strong></div>
+      <div class="srow"><span class="badge amb">Pending Supervisor Sign-off</span><strong>2</strong></div>
+      <div class="srow"><span class="badge red">Needs Info</span><strong>1</strong></div>
+      <div class="foot"><a class="btn" href="#04">Open approval tracker</a></div>
+    </div>
+  </div>`);
+
+/* 02 / 02b Validation */
+const VD=[
+['Ana Reyes','Overtime pay','Regular OT at 125% of hourly rate','₱ 1,875.00','₱ 2,343.75',1,['Open audit trail','#03']],
+['Ben Santos','Bonus','Performance bonus, tier B','₱ 3,000.00','₱ 3,000.00',0],
+['Carla Dizon','Leave deduction','No deduction when an approved leave request is on file','₱ 0.00','₱ 1,200.00',1,['Open approval request','#04']],
+['Dino Lim','Withholding tax','Tax table, sample bracket','₱ 2,450.00','₱ 2,450.00',0],
+['Elena Ramos','Bonus','Performance bonus, tier A','₱ 5,000.00','₱ 5,000.00',0],
+['Felix Tan','Salary history','Rate effective Oct 1','₱ 28,000.00','₱ 28,000.00',0],
+['Gina Flores','Overtime pay','Rest-day OT at 130% of hourly rate','₱ 1,560.00','₱ 1,560.00',0],
+['Hector Gomez','Leave deduction','No deduction when an approved leave request is on file','₱ 0.00','₱ 0.00',0],
+['Iris Navarro','Withholding tax','Tax table, sample bracket','₱ 1,980.00','₱ 1,980.00',0],
+['Jun Castro','Bonus','Performance bonus, tier C','₱ 1,500.00','₱ 1,500.00',0]];
+function validation(id,filtered){
+  const rows=VD.filter(r=>!filtered||r[5]).map(r=>`<tr class="${r[5]?'bad':''}"><td class="name">${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td><td class="${r[5]?'bad-v':''}">${r[4]}</td><td><span class="badge ${r[5]?'red':'grn'}">${r[5]?'Mismatch':'Match'}</span></td><td>${r[6]?`<a class="link" href="${r[6][1]}">${r[6][0]}</a>`:'<span class="dash">—</span>'}</td></tr>`).join('');
+  return shell(id,1,'Pre-payroll data &amp; rule validation','Compare the rule applied, the expected value, and the system-detected value before payroll runs.',`
+    <div class="bar-row"><div class="chips"><a class="chip" href="#02" ${!filtered?'aria-current="true"':''}>All (10)</a><a class="chip" href="#02b" ${filtered?'aria-current="true"':''}>Mismatches (2)</a></div><span class="muted">Showing ${filtered?2:10} of 10 checks</span></div>
+    <div class="card tw"><table><thead><tr><th>Employee</th><th>Check</th><th>Rule applied</th><th>Expected</th><th>System detected</th><th>Status</th><th>Action</th></tr></thead><tbody>${rows}</tbody></table></div>
+    <p class="note">Mismatch means the system-detected value differs from the expected value under the rule applied. All figures are sample data for prototype testing.</p>`);
+}
+
+/* 03 / 03b Audit trail */
+function audit(id,open){
+  const ln=(item,src,amt,flag,act)=>`<tr class="${flag?'bad':''}"><td class="name">${item}</td><td style="color:var(--tx2)">${src}</td><td class="${flag?'bad-v':''}">${amt}</td><td><span class="badge ${flag?'red':'grn'}">${flag?'Flagged':'Verified'}</span></td><td>${act||'<span class="dash">—</span>'}</td></tr>`;
+  const detail=open?`<tr class="detail"><td colspan="5">
+    <h3>How this overtime figure was calculated</h3>
+    <div class="grid2">
+      <div class="blk"><h4>Source data</h4><p>Timesheet: 12.5 OT hours recorded</p><p>Approval request: 10 OT hours approved</p><p>Hourly rate: ₱ 150.00 from salary history</p></div>
+      <div class="blk"><h4>Formula used</h4><p>Used: 12.5 hrs × ₱ 150.00 × 1.25 = ₱ 2,343.75</p><p>Expected: 10 hrs × ₱ 150.00 × 1.25 = ₱ 1,875.00</p></div>
+      <div class="blk"><h4>Manual adjustments</h4><p>None recorded for this pay period.</p></div>
+      <div class="blk"><h4>Last verifier</h4><p>No verifier yet. Flagged by the pre-payroll validation run.</p></div>
+    </div>
+    <div class="diff">Difference: ₱ 468.75. The system counted 2.5 more OT hours than were approved.</div>
+    <div class="acts"><a class="btn primary" href="#04">Open approval request</a><a class="btn" href="#03">Hide detail</a></div>
+  </td></tr>`:'';
+  return shell(id,2,'Payslip audit trail','Ana Reyes · EMP-1001 · Pay period Oct 1 – 15, 2026 (sample)',`
+    <div><a class="link" href="#02">← Back to validation</a></div>
+    <div class="stats">
+      <div class="card stat sm"><small>Gross pay</small><strong>₱ 15,343.75</strong><span>Earnings total</span></div>
+      <div class="card stat sm"><small>Deductions</small><strong>₱ 1,450.00</strong><span>Withholding and contributions</span></div>
+      <div class="card stat sm"><small>Net pay</small><strong>₱ 13,893.75</strong><span>Gross pay minus deductions</span></div>
+      <div class="card stat sm"><small>Flagged line items</small><strong style="color:var(--red-t)">1</strong><span>Overtime pay</span></div>
+    </div>
+    <div class="card tw"><table><thead><tr><th>Line item</th><th>Source</th><th>Amount</th><th>Status</th><th>Action</th></tr></thead><tbody>
+      <tr class="sec"><td colspan="5">Earnings</td></tr>
+      ${ln('Basic pay','Salary history','₱ 12,000.00',0)}
+      ${ln('Overtime pay','Timesheet and OT request','₱ 2,343.75',1,open?'<a class="link" href="#03">Hide detail</a>':'<a class="link" href="#03b">View detail</a>')}
+      ${detail}
+      ${ln('Allowances','Employee record','₱ 1,000.00',0)}
+      <tr class="sec"><td colspan="5">Deductions</td></tr>
+      ${ln('Withholding tax','Tax table, sample bracket','₱ 650.00',0)}
+      ${ln('SSS contribution','Contribution table, sample','₱ 400.00',0)}
+      ${ln('PhilHealth contribution','Contribution table, sample','₱ 300.00',0)}
+      ${ln('Pag-IBIG contribution','Contribution table, sample','₱ 100.00',0)}
+      <tr class="total"><td>Net pay</td><td></td><td>₱ 13,893.75</td><td></td><td></td></tr>
+    </tbody></table></div>
+    <p class="note">All figures are sample data for prototype testing.</p>`);
+}
+
+/* 04 / 04b / 04c Tracker */
+const TR=[
+['Ana Reyes','Overtime','Oct 5','10 hrs','Approved','grn','M. Ocampo'],
+['Carla Dizon','Leave','Oct 6','1 day','Needs Info','red','M. Ocampo'],
+['Gina Flores','Overtime','Oct 7','6 hrs','Approved','grn','R. Bautista'],
+['Hector Gomez','Leave','Oct 8','1 day','Approved','grn','R. Bautista'],
+['Ben Santos','Overtime','Oct 9','2 hrs','Pending Supervisor Sign-off','amb','M. Ocampo'],
+['Jun Castro','Overtime','Oct 10','3 hrs','Pending Supervisor Sign-off','amb','M. Ocampo']];
+function tracker(id,mode){
+  const toast=mode==='base'?'':`<div class="toast" role="status"><span>${mode==='rem'?'Reminder sent to M. Ocampo for 2 pending requests.':'Information request sent to M. Ocampo for Carla Dizon’s leave.'}</span><a href="#04">Dismiss</a></div>`;
+  const reminder=mode==='rem'?'<span class="btn disabled" aria-disabled="true">Reminder sent</span>':'<a class="btn primary" href="#04b">Send reminder to M. Ocampo (2 pending)</a>';
+  const rows=TR.map(r=>{
+    let act='<span class="dash">—</span>';
+    if(r[5]==='red') act=mode==='req'?'<span style="color:var(--grn-t);font-weight:500">Request sent</span>':'<a class="link" href="#04c">Request info</a>';
+    return `<tr class="${r[5]==='red'?'bad':''}"><td class="name">${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td><td><span class="badge ${r[5]}">${r[4]}</span></td><td style="color:var(--tx2)">${r[6]}</td><td>${act}</td></tr>`;}).join('');
+  return shell(id,3,'OT &amp; leave approval tracker','One shared status for every overtime and leave request, in place of paper forms.',`
+    ${toast}
+    <div class="bar-row"><div class="sum"><span class="badge grn">Approved · 3</span><span class="badge amb">Pending Supervisor Sign-off · 2</span><span class="badge red">Needs Info · 1</span></div>${reminder}</div>
+    <div class="card tw"><table><thead><tr><th>Employee</th><th>Type</th><th>Date</th><th>Duration</th><th>Status</th><th>Supervisor</th><th>Action</th></tr></thead><tbody>${rows}</tbody></table></div>
+    <p class="note">All figures are sample data for prototype testing. In this prototype, each state shows the result of the latest action only.</p>`);
+}
+
+document.getElementById('app').innerHTML=[
+  s01,validation('02',false),validation('02b',true),audit('03',false),audit('03b',true),tracker('04','base'),tracker('04b','rem'),tracker('04c','req')
+].join('');
+
+const screens=[...document.querySelectorAll('.screen')];
+function route(){
+  const id=(location.hash||'#01').slice(1);
+  const target=screens.find(s=>s.dataset.screen===id)||screens[0];
+  screens.forEach(s=>s.hidden=s!==target);
+  window.scrollTo(0,0);
+  const h=target.querySelector('h1');
+  document.title=h.textContent+' | MotorPH prototype';
+}
+window.addEventListener('hashchange',route);
+route();
+</script>
+</body>
+</html>
